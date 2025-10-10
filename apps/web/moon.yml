@@ -1,0 +1,23 @@
+id: 'frontend'
+language: 'typescript'
+layer: 'application'
+stack: 'frontend'
+dependsOn:
+  - 'ui'
+  - 'biome-config'
+  - 'typescript-config'
+
+fileGroups:
+  source: 
+    - glob: 'src/**'
+      cache: true
+  configs:
+    - file: 'biome.json'
+    - file: 'next-env.d.ts'
+    - file: 'next.config.mjs'
+    - file: 'postcss.config.mjs'
+    - file: 'package.json'
+    - file: 'tsconfig.json'
+    
+    
+    

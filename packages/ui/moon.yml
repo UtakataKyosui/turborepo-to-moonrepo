@@ -1,0 +1,15 @@
+id:  'ui'
+language: 'typescript'
+layer: 'library'
+stack: 'frontend'
+
+fileGroups:
+  source: 
+    - glob: 'src/**'
+      cache: true
+  configs: 
+    - file: 'tsconfig.json'
+    - file: 'postcss.config.js'
+    - file: 'biome.json'
+    - file: 'components.json'
+    - file: 'package.json'
