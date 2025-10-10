@@ -9,10 +9,6 @@ tasks:
     outputs:
     - '.next/**/*'
     - '!.next/cache/**/*'
-  check-types:
-    command: pnpm run check-types
-    deps:
-    - ^:check-types
   dev:
     command: pnpm run dev
     options:
@@ -22,3 +18,7 @@ tasks:
     command: pnpm run lint
     deps:
     - ^:lint
+  format:
+    command: pnpm run format
+    deps:
+    - ^:format
