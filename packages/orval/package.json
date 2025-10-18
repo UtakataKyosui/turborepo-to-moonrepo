@@ -1,0 +1,10 @@
+{
+  "name": "@workspace/orval",
+  "packageManager": "pnpm@10.4.1",
+  "devDependencies": {
+    "orval": "^7.13.2",
+    "@workspace/typescript-config": "workspace:*",
+    "@biomejs/biome": "^2.2.5",
+    "@repo/biome-config": "workspace:*"
+  }
+}

@@ -9,3 +9,8 @@ vcs:
 
 experiments:
   gitV2: true
+
+docker:
+  prune:
+    deleteVendorDirectories: true
+    installToolchainDeps: true

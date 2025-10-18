@@ -1,0 +1,798 @@
+openapi: 3.1.0
+info:
+  title:  Utakata Server
+  version: 0.1.0
+  description: | 
+    Utakata Kyosui Monorepo Service API.
+    Used Backend Framework is Loco.rs
+    Axum based Backend Framework for Rust.
+
+    Life Management Service.
+    Create Life Log
+  contact:
+    name: Kyosui Utakata
+    email: fill.ayaextech@gmail.com
+servers:
+  - url: http://localhost:3000/api
+tags:
+  - name: user
+    description: User related endpoints
+  - name: auth
+    description: Authentication related endpoints
+  - name: vital
+    description: Vital signs related endpoints
+  - name: clothes
+    description: Clothing management endpoints
+  - name: habits
+    description: Habit tracking endpoints
+
+paths:
+  # Authentication endpoints
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - name
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+                name:
+                  type: string
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Invalid input
+        '409':
+          description: Email already exists
+
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login user
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      tags:
+        - auth
+      summary: Logout user
+      operationId: logoutUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+        '401':
+          description: Unauthorized
+
+  /auth/refresh:
+    post:
+      tags:
+        - auth
+      summary: Refresh access token
+      operationId: refreshToken
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized
+
+  # User endpoints
+  /users/me:
+    get:
+      tags:
+        - user
+      summary: Get current user profile
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Unauthorized
+
+    put:
+      tags:
+        - user
+      summary: Update current user profile
+      operationId: updateCurrentUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Unauthorized
+
+  # Clothes management endpoints
+  /clothes:
+    get:
+      tags:
+        - clothes
+      summary: Get all clothes for current user
+      operationId: getAllClothes
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [tops, bottoms, outerwear, shoes, accessories]
+        - name: season
+          in: query
+          schema:
+            type: string
+            enum: [spring, summer, autumn, winter, all_season]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of clothes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClothingItem'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+
+    post:
+      tags:
+        - clothes
+      summary: Add new clothing item
+      operationId: createClothingItem
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClothingItemInput'
+      responses:
+        '201':
+          description: Clothing item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClothingItem'
+        '401':
+          description: Unauthorized
+
+  /clothes/{id}:
+    get:
+      tags:
+        - clothes
+      summary: Get clothing item by ID
+      operationId: getClothingItemById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Clothing item details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClothingItem'
+        '404':
+          description: Clothing item not found
+        '401':
+          description: Unauthorized
+
+    put:
+      tags:
+        - clothes
+      summary: Update clothing item
+      operationId: updateClothingItem
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClothingItemInput'
+      responses:
+        '200':
+          description: Clothing item updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClothingItem'
+        '404':
+          description: Clothing item not found
+        '401':
+          description: Unauthorized
+
+    delete:
+      tags:
+        - clothes
+      summary: Delete clothing item
+      operationId: deleteClothingItem
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Clothing item deleted
+        '404':
+          description: Clothing item not found
+        '401':
+          description: Unauthorized
+
+  # Habits management endpoints
+  /habits:
+    get:
+      tags:
+        - habits
+      summary: Get all habits for current user
+      operationId: getAllHabits
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, archived]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: List of habits
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Habit'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+
+    post:
+      tags:
+        - habits
+      summary: Create new habit
+      operationId: createHabit
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HabitInput'
+      responses:
+        '201':
+          description: Habit created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habit'
+        '401':
+          description: Unauthorized
+
+  /habits/{id}:
+    get:
+      tags:
+        - habits
+      summary: Get habit by ID
+      operationId: getHabitById
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Habit details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habit'
+        '404':
+          description: Habit not found
+        '401':
+          description: Unauthorized
+
+    put:
+      tags:
+        - habits
+      summary: Update habit
+      operationId: updateHabit
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HabitInput'
+      responses:
+        '200':
+          description: Habit updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Habit'
+        '404':
+          description: Habit not found
+        '401':
+          description: Unauthorized
+
+    delete:
+      tags:
+        - habits
+      summary: Delete habit
+      operationId: deleteHabit
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Habit deleted
+        '404':
+          description: Habit not found
+        '401':
+          description: Unauthorized
+
+  /habits/{id}/track:
+    post:
+      tags:
+        - habits
+      summary: Track habit completion
+      operationId: trackHabit
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - completed_at
+              properties:
+                completed_at:
+                  type: string
+                  format: date-time
+                note:
+                  type: string
+      responses:
+        '201':
+          description: Habit tracked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitLog'
+        '404':
+          description: Habit not found
+        '401':
+          description: Unauthorized
+
+  /habits/{id}/logs:
+    get:
+      tags:
+        - habits
+      summary: Get habit completion logs
+      operationId: getHabitLogs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        '200':
+          description: Habit logs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/HabitLog'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '404':
+          description: Habit not found
+        '401':
+          description: Unauthorized
+
+  /habits/{id}/statistics:
+    get:
+      tags:
+        - habits
+      summary: Get habit statistics
+      operationId: getHabitStatistics
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [week, month, year]
+            default: month
+      responses:
+        '200':
+          description: Habit statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitStatistics'
+        '404':
+          description: Habit not found
+        '401':
+          description: Unauthorized
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ClothingItemInput:
+      type: object
+      required:
+        - name
+        - category
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+          enum: [tops, bottoms, outerwear, shoes, accessories]
+        brand:
+          type: string
+        color:
+          type: string
+        season:
+          type: string
+          enum: [spring, summer, autumn, winter, all_season]
+        purchase_date:
+          type: string
+          format: date
+        purchase_price:
+          type: number
+          format: float
+        image_url:
+          type: string
+          format: uri
+        notes:
+          type: string
+
+    ClothingItem:
+      allOf:
+        - $ref: '#/components/schemas/ClothingItemInput'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            user_id:
+              type: string
+              format: uuid
+            wear_count:
+              type: integer
+              default: 0
+            last_worn_at:
+              type: string
+              format: date-time
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    HabitInput:
+      type: object
+      required:
+        - name
+        - frequency
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        frequency:
+          type: string
+          enum: [daily, weekly, monthly]
+        target_count:
+          type: integer
+          description: Target number of completions per frequency period
+        reminder_time:
+          type: string
+          pattern: '^([01]\d|2[0-3]):([0-5]\d)$'
+        icon:
+          type: string
+        color:
+          type: string
+
+    Habit:
+      allOf:
+        - $ref: '#/components/schemas/HabitInput'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            user_id:
+              type: string
+              format: uuid
+            status:
+              type: string
+              enum: [active, archived]
+              default: active
+            current_streak:
+              type: integer
+              default: 0
+            longest_streak:
+              type: integer
+              default: 0
+            total_completions:
+              type: integer
+              default: 0
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    HabitLog:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        habit_id:
+          type: string
+          format: uuid
+        completed_at:
+          type: string
+          format: date-time
+        note:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    HabitStatistics:
+      type: object
+      properties:
+        habit_id:
+          type: string
+          format: uuid
+        period:
+          type: string
+          enum: [week, month, year]
+        completion_rate:
+          type: number
+          format: float
+          description: Percentage of target completions achieved
+        total_completions:
+          type: integer
+        current_streak:
+          type: integer
+        longest_streak:
+          type: integer
+        average_per_period:
+          type: number
+          format: float
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        total_pages:
+          type: integer

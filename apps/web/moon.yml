@@ -1,7 +1,10 @@
+$schema: https://moonrepo.dev/schemas/project.json
+
 id: 'frontend'
 language: 'typescript'
 layer: 'application'
 stack: 'frontend'
+
 dependsOn:
   - 'ui'
   - 'biome-config'
@@ -18,6 +21,11 @@ fileGroups:
     - file: 'postcss.config.mjs'
     - file: 'package.json'
     - file: 'tsconfig.json'
+
+docker:
+  file:
+    buildTask: 'build'
+    startTask: 'start'
     
     
     
