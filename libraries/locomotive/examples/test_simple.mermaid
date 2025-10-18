@@ -1,0 +1,7 @@
+erDiagram
+    USER ||--o{ POST : creates
+    USER ||--o{ COMMENT : writes  
+    POST ||--o{ COMMENT : has
+    POST }o--|| CATEGORY : belongs_to
+    USER }|--|| PROFILE : has
+    USER }o--o{ TAG : follows

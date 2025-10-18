@@ -1,0 +1,98 @@
+name: 🐛 Bug Report
+description: Create a report to help us improve LocoMotive
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! 🚀
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 🐛 Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Tell us what happened!
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 🔄 Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Run command '...'
+        2. Use input file '....'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ✅ Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: ❌ Actual Behavior
+      description: A clear and concise description of what actually happened.
+      placeholder: What actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: input-files
+    attributes:
+      label: 📁 Input Files
+      description: If applicable, please provide the OpenAPI specification or ER diagram files that caused the issue.
+      placeholder: |
+        Please paste the content of your OpenAPI file or ER diagram here, or describe the structure if it contains sensitive information.
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📋 Error Logs
+      description: If applicable, add error logs or command output.
+      render: shell
+      placeholder: Paste error logs or command output here
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: 🏷️ LocoMotive Version
+      description: What version of LocoMotive are you running?
+      options:
+        - v0.5.0 (latest)
+        - v0.3.0
+        - v0.1.0
+        - Built from source (main branch)
+        - Built from source (other branch)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: 💻 Operating System
+      description: What operating system are you using?
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other (please specify in additional context)
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: 📝 Additional Context
+      description: Add any other context about the problem here.
+      placeholder: Any additional information that might be helpful...

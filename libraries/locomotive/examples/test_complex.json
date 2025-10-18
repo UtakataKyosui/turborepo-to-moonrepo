@@ -1,0 +1,164 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "E-commerce API",
+    "version": "1.0.0",
+    "description": "Complex e-commerce system API"
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "required": ["username", "email", "password"],
+        "properties": {
+          "id": {"type": "integer"},
+          "username": {"type": "string", "uniqueItems": true},
+          "email": {"type": "string", "format": "email", "uniqueItems": true},
+          "password": {"type": "string", "minLength": 8},
+          "created_at": {"type": "string", "format": "date-time"},
+          "updated_at": {"type": "string", "format": "date-time"}
+        }
+      },
+      "Profile": {
+        "type": "object",
+        "required": ["user_id", "first_name", "last_name"],
+        "properties": {
+          "id": {"type": "integer"},
+          "user_id": {"type": "integer"},
+          "first_name": {"type": "string"},
+          "last_name": {"type": "string"},
+          "phone": {"type": "string"},
+          "bio": {"type": "string", "maxLength": 1000},
+          "avatar_url": {"type": "string", "format": "uri"}
+        }
+      },
+      "Product": {
+        "type": "object",
+        "required": ["name", "price", "category_id", "brand_id", "sku"],
+        "properties": {
+          "id": {"type": "integer"},
+          "name": {"type": "string"},
+          "description": {"type": "string", "maxLength": 2000},
+          "price": {"type": "number", "format": "decimal", "minimum": 0},
+          "stock_quantity": {"type": "integer", "minimum": 0},
+          "category_id": {"type": "integer"},
+          "brand_id": {"type": "integer"},
+          "sku": {"type": "string", "uniqueItems": true},
+          "created_at": {"type": "string", "format": "date-time"},
+          "updated_at": {"type": "string", "format": "date-time"}
+        }
+      },
+      "Order": {
+        "type": "object",
+        "required": ["user_id", "address_id", "status", "total_amount"],
+        "properties": {
+          "id": {"type": "integer"},
+          "user_id": {"type": "integer"},
+          "address_id": {"type": "integer"},
+          "payment_id": {"type": "integer"},
+          "status": {"type": "string", "enum": ["pending", "processing", "shipped", "delivered", "cancelled"]},
+          "total_amount": {"type": "number", "format": "decimal", "minimum": 0},
+          "created_at": {"type": "string", "format": "date-time"},
+          "shipped_at": {"type": "string", "format": "date-time"}
+        }
+      },
+      "OrderItem": {
+        "type": "object",
+        "required": ["order_id", "product_id", "quantity", "unit_price"],
+        "properties": {
+          "id": {"type": "integer"},
+          "order_id": {"type": "integer"},
+          "product_id": {"type": "integer"},
+          "quantity": {"type": "integer", "minimum": 1},
+          "unit_price": {"type": "number", "format": "decimal", "minimum": 0},
+          "total_price": {"type": "number", "format": "decimal", "minimum": 0}
+        }
+      },
+      "Category": {
+        "type": "object",
+        "required": ["name", "slug"],
+        "properties": {
+          "id": {"type": "integer"},
+          "name": {"type": "string", "uniqueItems": true},
+          "description": {"type": "string"},
+          "parent_id": {"type": "integer"},
+          "slug": {"type": "string", "uniqueItems": true}
+        }
+      },
+      "Brand": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "id": {"type": "integer"},
+          "name": {"type": "string", "uniqueItems": true},
+          "description": {"type": "string"},
+          "logo_url": {"type": "string", "format": "uri"},
+          "website": {"type": "string", "format": "uri"}
+        }
+      },
+      "Review": {
+        "type": "object",
+        "required": ["user_id", "product_id", "rating"],
+        "properties": {
+          "id": {"type": "integer"},
+          "user_id": {"type": "integer"},
+          "product_id": {"type": "integer"},
+          "rating": {"type": "integer", "minimum": 1, "maximum": 5},
+          "comment": {"type": "string", "maxLength": 1000},
+          "created_at": {"type": "string", "format": "date-time"}
+        }
+      },
+      "Address": {
+        "type": "object",
+        "required": ["user_id", "type", "street", "city", "state", "postal_code", "country"],
+        "properties": {
+          "id": {"type": "integer"},
+          "user_id": {"type": "integer"},
+          "type": {"type": "string", "enum": ["billing", "shipping"]},
+          "street": {"type": "string"},
+          "city": {"type": "string"},
+          "state": {"type": "string"},
+          "postal_code": {"type": "string"},
+          "country": {"type": "string"},
+          "is_default": {"type": "boolean"}
+        }
+      }
+    }
+  },
+  "paths": {
+    "/users": {
+      "get": {"summary": "List users", "responses": {"200": {"description": "OK"}}},
+      "post": {"summary": "Create user", "responses": {"201": {"description": "Created"}}}
+    },
+    "/users/{id}": {
+      "get": {"summary": "Get user", "responses": {"200": {"description": "OK"}}},
+      "put": {"summary": "Update user", "responses": {"200": {"description": "OK"}}},
+      "delete": {"summary": "Delete user", "responses": {"204": {"description": "No Content"}}}
+    },
+    "/products": {
+      "get": {"summary": "List products", "responses": {"200": {"description": "OK"}}},
+      "post": {"summary": "Create product", "responses": {"201": {"description": "Created"}}}
+    },
+    "/products/{id}": {
+      "get": {"summary": "Get product", "responses": {"200": {"description": "OK"}}},
+      "put": {"summary": "Update product", "responses": {"200": {"description": "OK"}}},
+      "delete": {"summary": "Delete product", "responses": {"204": {"description": "No Content"}}}
+    },
+    "/orders": {
+      "get": {"summary": "List orders", "responses": {"200": {"description": "OK"}}},
+      "post": {"summary": "Create order", "responses": {"201": {"description": "Created"}}}
+    },
+    "/orders/{id}": {
+      "get": {"summary": "Get order", "responses": {"200": {"description": "OK"}}},
+      "put": {"summary": "Update order", "responses": {"200": {"description": "OK"}}}
+    },
+    "/categories": {
+      "get": {"summary": "List categories", "responses": {"200": {"description": "OK"}}},
+      "post": {"summary": "Create category", "responses": {"201": {"description": "Created"}}}
+    },
+    "/reviews": {
+      "get": {"summary": "List reviews", "responses": {"200": {"description": "OK"}}},
+      "post": {"summary": "Create review", "responses": {"201": {"description": "Created"}}}
+    }
+  }
+}
