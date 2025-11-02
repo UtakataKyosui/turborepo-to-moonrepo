@@ -1,0 +1,45 @@
+$schema: https://moonrepo.dev/schemas/project.json
+
+id: 'fitbit'
+language: 'typescript'
+layer: 'library'
+stack: 'backend'
+
+dependsOn:
+  - 'biome-config'
+  - 'typescript-config'
+
+fileGroups:
+  source:
+    - glob: 'src/**'
+      cache: true
+  configs:
+    - glob: '*.json'
+
+tasks:
+  typecheck:
+    command: 'pnpm run typecheck'
+    options:
+      runFromWorkspaceRoot: false
+    inputs:
+      - '@globs(source)'
+      - '@globs(configs)'
+    outputs: []
+
+  check:
+    command: 'pnpm run check'
+    options:
+      runFromWorkspaceRoot: false
+    inputs:
+      - '@globs(source)'
+      - 'biome.json'
+    outputs: []
+
+  fix:
+    command: 'pnpm run fix'
+    options:
+      runFromWorkspaceRoot: false
+    inputs:
+      - '@globs(source)'
+      - 'biome.json'
+    outputs: []

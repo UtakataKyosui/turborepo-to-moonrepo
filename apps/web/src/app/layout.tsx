@@ -1,9 +1,12 @@
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "@workspace/ui/globals.css"
-import { Providers } from "@/src/components/providers"
+import { Providers } from "@/components/providers"
 import Navbar from "../components/navbar"
 import Footer from "../components/footer"
+import AutoBread from "../components/auto-bread"
+import { SidebarProvider } from "@workspace/ui/components/sidebar"
+import AppSlidebar from "../components/app-slidebar"
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -26,9 +29,15 @@ export default function RootLayout({
         className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
       >
         <Providers>
-          <Navbar />
-          {children}
-          <Footer />
+          <SidebarProvider>
+            <AppSlidebar />
+            <main className="container mx-auto py-[10vh]">
+              <Navbar />
+              <AutoBread />
+              {children}
+              <Footer />
+            </main>
+          </SidebarProvider>
         </Providers>
       </body>
     </html>

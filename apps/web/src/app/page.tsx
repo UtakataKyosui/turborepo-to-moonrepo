@@ -1,10 +1,11 @@
 import { Button } from "@workspace/ui/components/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card"
 import { Carousel, CarouselContent, CarouselItem } from "@workspace/ui/components/carousel"
+import { Separator } from "@workspace/ui/components/separator"
 
 export default function Page() {
   return (
-    <main className="container mx-auto py-[10vh]">
+    <>
       <Card className="border-foreground w-fit flex justify-center mx-auto">
         <CardHeader>
           <CardTitle className="scroll-m-20 text-2xl font-semibold tracking-tight">
@@ -17,6 +18,7 @@ export default function Page() {
           そのため、ここには私に関する情報の多くが含まれています。
         </CardContent>
       </Card>
+
 
       <Carousel opts={{
         loop: true
@@ -51,6 +53,6 @@ export default function Page() {
           </CarouselItem>
         </CarouselContent>
       </Carousel>
-    </main>
+    </>
   )
 }
