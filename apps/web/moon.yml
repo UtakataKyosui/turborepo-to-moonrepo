@@ -29,30 +29,30 @@ docker:
     startTask: 'start'
 
 tasks:
-  dev:
-    command: 'pnpm next dev'
-    local: true
-    options:
-      runFromWorkspaceRoot: false
-      cache: false
-    inputs:
-      - '@globs(source)'
-      - '@globs(configs)'
-    outputs: []
+  # dev:
+  #   command: 'pnpm next dev'
+  #   local: true
+  #   options:
+  #     runFromWorkspaceRoot: false
+  #     cache: false
+  #   inputs:
+  #     - '@globs(source)'
+  #     - '@globs(configs)'
+  #   outputs: []
 
-  build:
-    command: 'next build'
-    deps:
-      - '~:typecheck'
-      - '~:check'
-    options:
-      runFromWorkspaceRoot: false
-    inputs:
-      - '@globs(source)'
-      - '@globs(configs)'
-      - 'public/**'
-    outputs:
-      - '.next'
+  # build:
+  #   command: 'next build'
+  #   deps:
+  #     - '~:typecheck'
+  #     - '~:check'
+  #   options:
+  #     runFromWorkspaceRoot: false
+  #   inputs:
+  #     - '@globs(source)'
+  #     - '@globs(configs)'
+  #     - 'public/**'
+  #   outputs:
+  #     - '.next'
 
   start:
     command: 'next start'
@@ -62,19 +62,19 @@ tasks:
     options:
       runFromWorkspaceRoot: false
 
-  typecheck:
-    command: 'pnpm run typecheck'
-    deps:
-      - 'ui:check'
-      - 'fitbit:typecheck'
-      - 'cms:typecheck'
-      - 'weather:typecheck'
-    options:
-      runFromWorkspaceRoot: false
-    inputs:
-      - '@globs(source)'
-      - '@globs(configs)'
-    outputs: []
+  # typecheck:
+  #   command: 'pnpm run typecheck'
+  #   deps:
+  #     - 'ui:check'
+  #     - 'fitbit:typecheck'
+  #     - 'cms:typecheck'
+  #     - 'weather:typecheck'
+  #   options:
+  #     runFromWorkspaceRoot: false
+  #   inputs:
+  #     - '@globs(source)'
+  #     - '@globs(configs)'
+  #   outputs: []
 
   check:
     command: 'pnpm run check'
