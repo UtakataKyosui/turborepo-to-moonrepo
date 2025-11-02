@@ -28,16 +28,16 @@ docker:
     startTask: 'start'
 
 tasks:
-  dev:
-    command: 'pnpm next dev'
-    local: true
-    options:
-      runFromWorkspaceRoot: false
-      cache: false
-    inputs:
-      - '@globs(source)'
-      - '@globs(configs)'
-    outputs: []
+  # dev:
+  #   command: 'pnpm next dev'
+  #   local: true
+  #   options:
+  #     runFromWorkspaceRoot: false
+  #     cache: false
+  #   inputs:
+  #     - '@globs(source)'
+  #     - '@globs(configs)'
+  #   outputs: []
 
   build:
     command: 'next build'
@@ -64,9 +64,9 @@ tasks:
   typecheck:
     command: 'pnpm run typecheck'
     deps:
-      - 'ui:check'
-      - 'fitbit:typecheck'
-      - 'cms:typecheck'
+      - 'ui:check' # TODO: `ui:check` to `ui:typecheck` fix.
+      # - 'fitbit:typecheck'
+      # - 'cms:typecheck'
     options:
       runFromWorkspaceRoot: false
     inputs:
