@@ -4,9 +4,9 @@ import "@workspace/ui/globals.css"
 import { Providers } from "@/components/providers"
 import Navbar from "../components/navbar"
 import Footer from "../components/footer"
-// import AutoBread from "../components/auto-bread"
+import AutoBread from "../components/auto-bread"
 import { SidebarProvider } from "@workspace/ui/components/sidebar"
-// import AppSlidebar from "../components/app-slidebar"
+import AppSlidebar from "../components/app-slidebar"
 
 const fontSans = Inter({
   subsets: ["latin"],
@@ -25,10 +25,10 @@ export default function RootLayout({
       >
         <Providers>
           <SidebarProvider>
-            {/* <AppSlidebar /> */}
+            <AppSlidebar />
             <main className="container mx-auto py-[10vh]">
               <Navbar />
-              {/* <AutoBread /> */}
+              <AutoBread />
               {children}
               <Footer />
             </main>

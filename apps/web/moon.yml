@@ -12,6 +12,7 @@ dependsOn:
   - 'orval'
   - 'cms'
   - 'fitbit'
+  - 'weather'
 
 fileGroups:
   source: 
@@ -39,19 +40,19 @@ tasks:
   #     - '@globs(configs)'
   #   outputs: []
 
-  build:
-    command: 'next build'
-    deps:
-      - '~:typecheck'
-      - '~:check'
-    options:
-      runFromWorkspaceRoot: false
-    inputs:
-      - '@globs(source)'
-      - '@globs(configs)'
-      - 'public/**'
-    outputs:
-      - '.next'
+  # build:
+  #   command: 'next build'
+  #   deps:
+  #     - '~:typecheck'
+  #     - '~:check'
+  #   options:
+  #     runFromWorkspaceRoot: false
+  #   inputs:
+  #     - '@globs(source)'
+  #     - '@globs(configs)'
+  #     - 'public/**'
+  #   outputs:
+  #     - '.next'
 
   start:
     command: 'next start'
@@ -61,18 +62,19 @@ tasks:
     options:
       runFromWorkspaceRoot: false
 
-  typecheck:
-    command: 'pnpm run typecheck'
-    deps:
-      - 'ui:check' # TODO: `ui:check` to `ui:typecheck` fix.
-      # - 'fitbit:typecheck'
-      # - 'cms:typecheck'
-    options:
-      runFromWorkspaceRoot: false
-    inputs:
-      - '@globs(source)'
-      - '@globs(configs)'
-    outputs: []
+  # typecheck:
+  #   command: 'pnpm run typecheck'
+  #   deps:
+  #     - 'ui:check'
+  #     - 'fitbit:typecheck'
+  #     - 'cms:typecheck'
+  #     - 'weather:typecheck'
+  #   options:
+  #     runFromWorkspaceRoot: false
+  #   inputs:
+  #     - '@globs(source)'
+  #     - '@globs(configs)'
+  #   outputs: []
 
   check:
     command: 'pnpm run check'

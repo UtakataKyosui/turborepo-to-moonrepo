@@ -1,0 +1,12 @@
+$schema: 'https://moonrepo.dev/schemas/template.json'
+
+id: "typescript-package"
+title: "TypeScript Package"
+description: "A template for creating TypeScript packages."
+destination: "/packages/[name]"
+variables:
+  name:
+    type: "string"
+    prompt: "Package name"
+    required: true
+    default: "my-typescript-package"
