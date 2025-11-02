@@ -1,0 +1,24 @@
+{
+  "name": "User",
+  "fields": [
+    {
+      "name": "email",
+      "type": "string",
+      "nullable": false,
+      "unique": true,
+      "indexed": true
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "age",
+      "type": "integer",
+      "nullable": true
+    }
+  ],
+  "timestamps": true,
+  "generate_migration": true
+}

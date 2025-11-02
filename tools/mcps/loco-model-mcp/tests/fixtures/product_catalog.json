@@ -1,0 +1,51 @@
+{
+  "name": "Product",
+  "fields": [
+    {
+      "name": "sku",
+      "type": "string",
+      "nullable": false,
+      "unique": true,
+      "indexed": true
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "nullable": true
+    },
+    {
+      "name": "price",
+      "type": {
+        "decimal": {
+          "precision": 10,
+          "scale": 2
+        }
+      },
+      "nullable": false
+    },
+    {
+      "name": "stock_quantity",
+      "type": "integer",
+      "nullable": false,
+      "default_value": 0
+    },
+    {
+      "name": "category",
+      "type": "string",
+      "nullable": true,
+      "indexed": true
+    },
+    {
+      "name": "metadata",
+      "type": "jsonb",
+      "nullable": true
+    }
+  ],
+  "timestamps": true,
+  "generate_migration": true
+}

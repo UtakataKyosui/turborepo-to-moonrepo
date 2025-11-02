@@ -1,0 +1,59 @@
+{
+  "name": "Account",
+  "fields": [
+    {
+      "name": "email",
+      "type": "string",
+      "nullable": false,
+      "unique": true
+    },
+    {
+      "name": "username",
+      "type": "string",
+      "nullable": false,
+      "unique": true
+    },
+    {
+      "name": "password_hash",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "bio",
+      "type": "text",
+      "nullable": true
+    }
+  ],
+  "validations": [
+    {
+      "field": "email",
+      "rule": {
+        "type": "email"
+      }
+    },
+    {
+      "field": "username",
+      "rule": {
+        "type": "length",
+        "min": 3,
+        "max": 30
+      }
+    },
+    {
+      "field": "username",
+      "rule": {
+        "type": "regex",
+        "pattern": "^[a-zA-Z0-9_]+$"
+      }
+    },
+    {
+      "field": "bio",
+      "rule": {
+        "type": "length",
+        "max": 500
+      }
+    }
+  ],
+  "timestamps": true,
+  "generate_migration": true
+}

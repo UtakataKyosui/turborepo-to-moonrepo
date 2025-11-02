@@ -1,0 +1,50 @@
+{
+  "name": "Post",
+  "fields": [
+    {
+      "name": "title",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "slug",
+      "type": "string",
+      "nullable": false,
+      "unique": true,
+      "indexed": true
+    },
+    {
+      "name": "content",
+      "type": "text",
+      "nullable": false
+    },
+    {
+      "name": "published",
+      "type": "boolean",
+      "nullable": false,
+      "default_value": false
+    },
+    {
+      "name": "view_count",
+      "type": "integer",
+      "nullable": false,
+      "default_value": 0
+    },
+    {
+      "name": "user_id",
+      "type": "integer",
+      "nullable": false,
+      "indexed": true
+    }
+  ],
+  "relationships": [
+    {
+      "type": "belongs_to",
+      "name": "user",
+      "model": "User",
+      "foreign_key": "user_id"
+    }
+  ],
+  "timestamps": true,
+  "generate_migration": true
+}

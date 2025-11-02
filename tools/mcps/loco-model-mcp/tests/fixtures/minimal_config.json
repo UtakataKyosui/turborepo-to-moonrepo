@@ -1,0 +1,19 @@
+{
+  "name": "Config",
+  "fields": [
+    {
+      "name": "key",
+      "type": "string",
+      "nullable": false,
+      "unique": true,
+      "primary_key": true
+    },
+    {
+      "name": "value",
+      "type": "text",
+      "nullable": true
+    }
+  ],
+  "timestamps": false,
+  "generate_migration": false
+}

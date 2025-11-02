@@ -1,0 +1,19 @@
+{
+  "name": "User",
+  "table_name": "app_users",
+  "fields": [
+    {
+      "name": "email",
+      "type": "string",
+      "nullable": false,
+      "unique": true
+    },
+    {
+      "name": "full_name",
+      "type": "string",
+      "nullable": false
+    }
+  ],
+  "timestamps": true,
+  "generate_migration": true
+}

@@ -1,0 +1,453 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Loco Model MCP Tools Contract",
+  "description": "MCP tool definitions for generating Loco framework models",
+  "version": "1.0.0",
+  "tools": [
+    {
+      "name": "generate_model",
+      "description": "Generate a complete Loco model with fields, validations, and relationships",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Model name in PascalCase (e.g., 'User', 'BlogPost')",
+            "pattern": "^[A-Z][a-zA-Z0-9]*$",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Custom table name (defaults to snake_case plural of model name)",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "fields": {
+            "type": "array",
+            "description": "List of model fields/columns",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Field name in snake_case",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Field type (string, int, uuid, bool, timestamp, etc.)",
+                  "enum": [
+                    "string",
+                    "text",
+                    "int",
+                    "small_int",
+                    "big_int",
+                    "uuid",
+                    "bool",
+                    "timestamp",
+                    "date",
+                    "time",
+                    "json",
+                    "jsonb",
+                    "float",
+                    "double",
+                    "decimal",
+                    "binary"
+                  ]
+                },
+                "nullable": {
+                  "type": "boolean",
+                  "description": "Whether field can be NULL",
+                  "default": false
+                },
+                "unique": {
+                  "type": "boolean",
+                  "description": "Whether field has UNIQUE constraint",
+                  "default": false
+                },
+                "indexed": {
+                  "type": "boolean",
+                  "description": "Whether to create index on this field",
+                  "default": false
+                },
+                "default_value": {
+                  "description": "Default value for the field",
+                  "oneOf": [
+                    { "type": "string" },
+                    { "type": "number" },
+                    { "type": "boolean" },
+                    { "type": "null" }
+                  ]
+                },
+                "validations": {
+                  "type": "array",
+                  "description": "Field-level validation rules",
+                  "items": {
+                    "type": "string",
+                    "enum": ["email", "url", "required", "length", "range", "regex"]
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Documentation comment for the field"
+                }
+              },
+              "required": ["name", "type"]
+            },
+            "minItems": 1
+          },
+          "relationships": {
+            "type": "array",
+            "description": "Model relationships (belongs_to, has_many, etc.)",
+            "items": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "belongs_to"
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Target model name"
+                    },
+                    "foreign_key": {
+                      "type": "string",
+                      "description": "Foreign key field name"
+                    },
+                    "on_delete": {
+                      "type": "string",
+                      "enum": ["cascade", "restrict", "set_null", "no_action"],
+                      "default": "cascade"
+                    },
+                    "on_update": {
+                      "type": "string",
+                      "enum": ["cascade", "restrict", "set_null", "no_action"],
+                      "default": "cascade"
+                    }
+                  },
+                  "required": ["type", "model", "foreign_key"]
+                },
+                {
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "has_many"
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Target model name (plural)"
+                    },
+                    "foreign_key": {
+                      "type": "string",
+                      "description": "Foreign key in target model"
+                    }
+                  },
+                  "required": ["type", "model", "foreign_key"]
+                },
+                {
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "has_one"
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Target model name"
+                    },
+                    "foreign_key": {
+                      "type": "string",
+                      "description": "Foreign key in target model"
+                    }
+                  },
+                  "required": ["type", "model", "foreign_key"]
+                },
+                {
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "many_to_many"
+                    },
+                    "model": {
+                      "type": "string",
+                      "description": "Target model name"
+                    },
+                    "join_table": {
+                      "type": "string",
+                      "description": "Join table name"
+                    }
+                  },
+                  "required": ["type", "model", "join_table"]
+                }
+              ]
+            }
+          },
+          "validations": {
+            "type": "array",
+            "description": "Model-level validation rules",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "description": "Field name to validate"
+                },
+                "rule": {
+                  "type": "string",
+                  "enum": ["email", "url", "length", "range", "regex", "custom"]
+                },
+                "params": {
+                  "type": "object",
+                  "description": "Validation parameters (e.g., {min: 8, max: 100})"
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Custom error message"
+                }
+              },
+              "required": ["field", "rule"]
+            }
+          },
+          "hooks": {
+            "type": "array",
+            "description": "Lifecycle hooks to implement",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "before_save",
+                    "after_save",
+                    "before_create",
+                    "after_create",
+                    "before_update",
+                    "after_update",
+                    "before_delete",
+                    "after_delete"
+                  ]
+                },
+                "preset": {
+                  "type": "string",
+                  "description": "Predefined hook implementation",
+                  "enum": [
+                    "normalize_email",
+                    "generate_uuid",
+                    "set_timestamp",
+                    "trim_whitespace",
+                    "hash_password"
+                  ]
+                },
+                "custom_code": {
+                  "type": "string",
+                  "description": "Custom Rust code for the hook"
+                }
+              },
+              "required": ["type"],
+              "oneOf": [
+                { "required": ["preset"] },
+                { "required": ["custom_code"] }
+              ]
+            }
+          },
+          "timestamps": {
+            "type": "boolean",
+            "description": "Auto-generate created_at and updated_at fields",
+            "default": true
+          },
+          "generate_migration": {
+            "type": "boolean",
+            "description": "Generate corresponding database migration",
+            "default": false
+          }
+        },
+        "required": ["name", "fields"]
+      }
+    },
+    {
+      "name": "add_field",
+      "description": "Add a new field to an existing model",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Target model name",
+            "pattern": "^[A-Z][a-zA-Z0-9]*$"
+          },
+          "field": {
+            "type": "object",
+            "description": "Field definition to add",
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "nullable": { "type": "boolean", "default": false },
+              "unique": { "type": "boolean", "default": false },
+              "validations": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            },
+            "required": ["name", "type"]
+          },
+          "generate_migration": {
+            "type": "boolean",
+            "description": "Generate migration for adding this field",
+            "default": true
+          }
+        },
+        "required": ["model", "field"]
+      }
+    },
+    {
+      "name": "add_relationship",
+      "description": "Add a relationship to an existing model",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Source model name"
+          },
+          "relationship_type": {
+            "type": "string",
+            "enum": ["belongs_to", "has_many", "has_one", "many_to_many"]
+          },
+          "target_model": {
+            "type": "string",
+            "description": "Target model name"
+          },
+          "foreign_key": {
+            "type": "string",
+            "description": "Foreign key field name"
+          },
+          "join_table": {
+            "type": "string",
+            "description": "Join table name (for many_to_many)"
+          }
+        },
+        "required": ["model", "relationship_type", "target_model"]
+      }
+    },
+    {
+      "name": "add_validation",
+      "description": "Add validation rules to model fields",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Target model name"
+          },
+          "validations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": { "type": "string" },
+                "rule": { "type": "string" },
+                "params": { "type": "object" },
+                "message": { "type": "string" }
+              },
+              "required": ["field", "rule"]
+            }
+          }
+        },
+        "required": ["model", "validations"]
+      }
+    },
+    {
+      "name": "add_hook",
+      "description": "Add lifecycle hook to a model",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Target model name"
+          },
+          "hook_type": {
+            "type": "string",
+            "enum": [
+              "before_save",
+              "after_save",
+              "before_create",
+              "after_create",
+              "before_update",
+              "after_update",
+              "before_delete",
+              "after_delete"
+            ]
+          },
+          "implementation": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "preset": { "type": "string" },
+                  "field": { "type": "string" }
+                },
+                "required": ["preset"]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "custom_code": { "type": "string" }
+                },
+                "required": ["custom_code"]
+              }
+            ]
+          }
+        },
+        "required": ["model", "hook_type", "implementation"]
+      }
+    },
+    {
+      "name": "generate_migration",
+      "description": "Generate database migration for an existing model",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "Model name to generate migration for"
+          },
+          "migration_type": {
+            "type": "string",
+            "enum": ["create_table", "add_column", "add_index", "add_foreign_key"],
+            "default": "create_table"
+          }
+        },
+        "required": ["model"]
+      }
+    },
+    {
+      "name": "validate_model",
+      "description": "Validate a model specification without generating code",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "fields": { "type": "array" },
+          "relationships": { "type": "array" }
+        },
+        "required": ["name", "fields"]
+      }
+    },
+    {
+      "name": "list_field_types",
+      "description": "List all supported Loco field types and their mappings",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "detailed": {
+            "type": "boolean",
+            "description": "Include detailed type information (Rust types, DB types)",
+            "default": false
+          }
+        }
+      }
+    }
+  ]
+}
