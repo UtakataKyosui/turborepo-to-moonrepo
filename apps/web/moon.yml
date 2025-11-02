@@ -12,7 +12,7 @@ dependsOn:
   - 'orval'
   - 'cms'
   - 'fitbit'
-  - 'weather'
+  # - 'weather'
 
 fileGroups:
   source: 
