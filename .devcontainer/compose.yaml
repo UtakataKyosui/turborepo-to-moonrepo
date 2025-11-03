@@ -1,0 +1,120 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sleep infinity
+    stdin_open: true
+    tty: true
+    networks:
+      - db
+      - redis
+      - mailer
+    volumes:
+      - ../:/workspace
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+      - "8000:8000"
+    # メモリとCPU制限を適切に設定
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
+  db:
+    image: postgres:15.3-alpine
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    networks:
+      - db
+    volumes:
+      # データベースデータの永続化
+      - postgres-data:/var/lib/postgresql/data
+      # 共有メモリ設定でパフォーマンス向上
+      - /dev/shm:/dev/shm
+    env_file:
+      - .env
+    # PostgreSQL最適化設定
+    command: >
+      postgres
+      -c shared_preload_libraries=pg_stat_statements
+      -c pg_stat_statements.track=all
+      -c max_connections=200
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.7
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+    # ヘルスチェック追加
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    networks:
+      - redis
+    volumes:
+      # Redis設定ファイル
+      - redis-data:/data
+    # Redis最適化設定
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --save 60 1000
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+    # ヘルスチェック追加
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mailer:
+    image: mailtutan/mailtutan:latest
+    restart: unless-stopped
+    ports:
+      - 1080:1080
+      - 1025:1025
+    networks:
+      - mailer
+    # メモリ制限
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  # Cargoキャッシュ用ボリューム
+  cargo-cache:
+    driver: local
+  cargo-git-cache:
+    driver: local
+  target-cache:
+    driver: local
+
+networks:
+  db:
+    driver: bridge
+  redis:
+    driver: bridge
+  mailer:
+    driver: bridge

@@ -38,3 +38,7 @@ npm-debug.log*
 # moon
 .moon/cache
 .moon/docker
+
+# pnpm
+.pnpm-store
+
