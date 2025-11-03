@@ -18,7 +18,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # protoのインストール
-RUN bash -c "bash <(curl -fsSL https://moonrepo.dev/install/proto.sh) --yes"
+RUN curl -fsSL -o proto.sh https://moonrepo.dev/install/proto.sh && \
+    # ここで proto.sh のチェックサムを検証することを推奨します。 (例: echo "EXPECTED_CHECKSUM  proto.sh" | sha256sum -c -) && \
+    bash proto.sh --yes && \
+    rm proto.sh
 
 # protoのPATHを通す
 ENV PATH="/root/.proto/bin:${PATH}"

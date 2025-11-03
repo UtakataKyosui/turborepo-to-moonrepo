@@ -12,9 +12,9 @@
 	// VS Code環境での追加設定
     "mounts": [
         // SSH鍵のマウント（必要に応じて）
-        "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+        "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,consistency=cached",
         // Git設定のマウント
-        "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached"
+        "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
     ],
 
 	// ポート転送の詳細設定

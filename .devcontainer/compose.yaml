@@ -12,8 +12,13 @@ services:
       - mailer
     volumes:
       - ../:/workspace
+      - cargo-cache:/root/.cargo/registry
+      - cargo-git-cache:/root/.cargo/git
+      - target-cache:/workspace/target
     env_file:
       - .env
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}"
     ports:
       - "3000:3000"
       - "8000:8000"
@@ -85,7 +90,7 @@ services:
       retries: 3
 
   mailer:
-    image: mailtutan/mailtutan:latest
+    image: mailtutan/mailtutan:1.2.0
     restart: unless-stopped
     ports:
       - 1080:1080
