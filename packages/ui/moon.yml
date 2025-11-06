@@ -1,15 +1,31 @@
-id:  'ui'
+id: 'ui'
 language: 'typescript'
 layer: 'library'
 stack: 'frontend'
 
+dependsOn:
+  - 'biome-config'
+  - 'typescript-config'
+
 fileGroups:
-  source: 
+  source:
     - glob: 'src/**'
       cache: true
-  configs: 
-    - file: 'tsconfig.json'
-    - file: 'postcss.config.js'
-    - file: 'biome.json'
-    - file: 'components.json'
-    - file: 'package.json'
+  configs:
+    - glob: '*.json'
+    - glob: '*.config.*'
+
+tasks:
+  check:
+    command: 'biome check .'
+    inputs:
+      - '@globs(source)'
+      - 'biome.json'
+    outputs: []
+
+  fix:
+    command: 'biome check --fix .'
+    inputs:
+      - '@globs(source)'
+      - 'biome.json'
+    outputs: []

@@ -1,0 +1,13 @@
+id:  'orval'
+language: 'typescript'
+layer: 'library'
+stack: 'frontend'
+
+fileGroups:
+  source: 
+    - glob: 'src/**'
+      cache: true
+  configs: 
+    - file: 'tsconfig.json'
+    - file: 'orval.config.ts'
+    - file: 'package.json'

@@ -1,0 +1,14 @@
+id: "prompt-tui"
+language: rust
+layer: tool
+project: 
+  name: "prompt-tui"
+  description: "A TUI for managing and generating prompts."
+  channel: "#moon"
+
+stack: "systems"
+tags:
+  - "tui"
+  - "cli"
+  - "prompts"
+  - "poml"

@@ -1,6 +1,6 @@
 $schema: https://moonrepo.dev/schemas/project.json
 
-id: 'frontend'
+id: 'web'
 language: 'typescript'
 layer: 'application'
 stack: 'frontend'
@@ -9,23 +9,94 @@ dependsOn:
   - 'ui'
   - 'biome-config'
   - 'typescript-config'
+  - 'orval'
+  - 'cms'
+  - 'fitbit'
+  - 'weather'
 
 fileGroups:
   source: 
     - glob: 'src/**'
       cache: true
   configs:
-    - file: 'biome.json'
-    - file: 'next-env.d.ts'
-    - file: 'next.config.mjs'
-    - file: 'postcss.config.mjs'
-    - file: 'package.json'
-    - file: 'tsconfig.json'
+    - glob: '*.json'
+    - glob: '*.config.*'
+    - glob: 'next-env.d.ts'
 
 docker:
   file:
     buildTask: 'build'
     startTask: 'start'
-    
-    
-    
+
+tasks:
+  # dev:
+  #   command: 'pnpm next dev'
+  #   local: true
+  #   options:
+  #     runFromWorkspaceRoot: false
+  #     cache: false
+  #   inputs:
+  #     - '@globs(source)'
+  #     - '@globs(configs)'
+  #   outputs: []
+
+  # build:
+  #   command: 'next build'
+  #   deps:
+  #     - '~:typecheck'
+  #     - '~:check'
+  #   options:
+  #     runFromWorkspaceRoot: false
+  #   inputs:
+  #     - '@globs(source)'
+  #     - '@globs(configs)'
+  #     - 'public/**'
+  #   outputs:
+  #     - '.next'
+
+  start:
+    command: 'next start'
+    deps:
+      - '~:build'
+    local: true
+    options:
+      runFromWorkspaceRoot: false
+
+  # typecheck:
+  #   command: 'pnpm run typecheck'
+  #   deps:
+  #     - 'ui:check'
+  #     - 'fitbit:typecheck'
+  #     - 'cms:typecheck'
+  #     - 'weather:typecheck'
+  #   options:
+  #     runFromWorkspaceRoot: false
+  #   inputs:
+  #     - '@globs(source)'
+  #     - '@globs(configs)'
+  #   outputs: []
+
+  check:
+    command: 'pnpm run check'
+    options:
+      runFromWorkspaceRoot: false
+    inputs:
+      - '@globs(source)'
+      - 'biome.json'
+    outputs: []
+
+  fix:
+    command: 'pnpm run fix'
+    options:
+      runFromWorkspaceRoot: false
+    inputs:
+      - '@globs(source)'
+      - 'biome.json'
+    outputs: []
+
+  deploy:
+    command: 'echo "Ready to deploy"'
+    deps:
+      - '~:build'
+    inputs: []
+    outputs: []
