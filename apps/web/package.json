@@ -16,7 +16,6 @@
     "@workspace/fitbit": "workspace:*",
     "@workspace/react": "workspace:*",
     "@workspace/ui": "workspace:*",
-    "@workspace/weather": "workspace:*",
     "eslint-config-next": "15.5.6",
     "lucide-react": "0.546.0",
     "next": "15.5.6",
